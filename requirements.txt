@@ -1,0 +1,7 @@
+pytest>=8.0
+# Opsional: boleh dipakai untuk TF-IDF dan cosine similarity (jelaskan di Bab IV
+# bagian mana yang pakai library dan mana yang buatan sendiri).
+scikit-learn>=1.4
+# Opsional untuk POS tagging / NER / stemming, kalau tim memutuskan memakainya:
+# nltk
+# Sastrawi
