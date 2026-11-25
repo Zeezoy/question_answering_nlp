@@ -1,7 +1,0 @@
-no,pertanyaan,tipe_pertanyaan,ground_truth,tipe_jawaban,id_tokoh
-1,Kapan Soekarno lahir?,WHEN,6 Juni 1901,DATE,tokoh_01
-2,Siapa yang mendampingi Soekarno memproklamasikan kemerdekaan Indonesia?,WHO,Mohammad Hatta,PERSON,tokoh_01
-3,Kapan Mohammad Hatta lahir?,WHEN,12 Agustus 1902,DATE,tokoh_02
-4,Apa julukan yang diberikan kepada Mohammad Hatta karena perannya dalam gerakan koperasi?,WHAT,Bapak Koperasi Indonesia,DESCRIPTION,tokoh_02
-5,Kapan Jenderal Sudirman lahir?,WHEN,24 Januari 1916,DATE,tokoh_03
-6,Di kota mana Jenderal Sudirman lahir?,WHERE,Purbalingga,LOCATION,tokoh_03

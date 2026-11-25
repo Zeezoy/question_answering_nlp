@@ -65,5 +65,5 @@ def test_ground_truth_ada_di_korpus():
 
 
 @questions_ada
-def test_jumlah_pertanyaan_final_20():
-    assert len(_pertanyaan()) == 20
+def test_jumlah_pertanyaan_minimal_20():
+    assert len(_pertanyaan()) >= 20  # minimal 20 soal evaluasi

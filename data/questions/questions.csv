@@ -1,0 +1,37 @@
+no,pertanyaan,tipe_pertanyaan,ground_truth,tipe_jawaban,id_tokoh
+1,Kapan Soekarno lahir?,WHEN,6 Juni 1901,DATE,tokoh_01
+2,Siapa yang mendampingi Soekarno memproklamasikan kemerdekaan Indonesia?,WHO,Mohammad Hatta,PERSON,tokoh_01
+3,Kapan Mohammad Hatta lahir?,WHEN,12 Agustus 1902,DATE,tokoh_02
+4,Apa julukan yang diberikan kepada Mohammad Hatta karena perannya dalam gerakan koperasi?,WHAT,Bapak Koperasi Indonesia,DESCRIPTION,tokoh_02
+5,Kapan Jenderal Sudirman lahir?,WHEN,24 Januari 1916,DATE,tokoh_03
+6,Di mana Jenderal Sudirman dilahirkan?,WHERE,"Bodas Karangjati, Kabupaten Purbolinggo",LOCATION,tokoh_03
+7,Siapa yang terpilih menjadi Panglima Besar TKR pada konferensi 12 November 1945?,WHO,Jenderal Sudirman,PERSON,tokoh_03
+8,Kapan Jenderal Sudirman wafat?,WHEN,29 Januari 1950,DATE,tokoh_03
+9,Di kota mana Jenderal Sudirman wafat?,WHERE,Magelang,LOCATION,tokoh_03
+10,Organisasi ketentaraan apa yang diikuti Jenderal Sudirman pada masa pendudukan Jepang?,WHAT,Pembela Tanah Air (PETA),DESCRIPTION,tokoh_03
+11,Kapan Ki Hajar Dewantara lahir?,WHEN,2 Mei 1889,DATE,tokoh_04
+12,Di kota mana Ki Hajar Dewantara dilahirkan?,WHERE,Yogyakarta,LOCATION,tokoh_04
+13,Siapa nama asli Ki Hajar Dewantara?,WHO,R.M. Suwardi Suryaningrat,PERSON,tokoh_04
+14,Apa nama perguruan yang didirikan Ki Hajar Dewantara?,WHAT,Taman Siswa,DESCRIPTION,tokoh_04
+15,Kapan Ki Hajar Dewantara mendirikan perguruan Taman Siswa?,WHEN,3 Juli 1929,DATE,tokoh_04
+16,Kapan Ki Hajar Dewantara wafat?,WHEN,26 April 1959,DATE,tokoh_04
+17,Kapan R.A. Kartini lahir?,WHEN,21 April 1879,DATE,tokoh_05
+18,Di kota mana R.A. Kartini dilahirkan?,WHERE,Jepara,LOCATION,tokoh_05
+19,Siapa nama suami R.A. Kartini?,WHO,Raden Adipati Joyodiningrat,PERSON,tokoh_05
+20,Apa nama sekolah yang didirikan untuk anak perempuan atas dukungan suami Kartini?,WHAT,Sekolah Kartini,DESCRIPTION,tokoh_05
+21,Kapan R.A. Kartini wafat?,WHEN,17 September 1904,DATE,tokoh_05
+22,Apa judul buku kumpulan surat-surat R.A. Kartini?,WHAT,Door Duisternis tot Licht atau Habis Gelap Terbitlah Terang,DESCRIPTION,tokoh_05
+23,Kapan Sutan Sjahrir lahir?,WHEN,5 Maret 1909,DATE,tokoh_06
+24,Di kota mana Sutan Sjahrir wafat?,WHERE,Zurich,LOCATION,tokoh_06
+25,Siapa yang dibuang bersama Sutan Sjahrir ke Boven Digoel dan Banda Neira?,WHO,Mohammad Hatta,PERSON,tokoh_06
+26,Siapa yang dinikahi Cut Nyak Dhien pada tahun 1880?,WHO,Teuku Umar,PERSON,tokoh_07
+27,Kapan Cut Nyak Dhien wafat?,WHEN,6 November 1908,DATE,tokoh_07
+28,Siapa nama asli Pattimura?,WHO,Thomas Matulessy,PERSON,tokoh_08
+29,Kapan Pattimura diangkat sebagai kapitan?,WHEN,7 Mei 1817,DATE,tokoh_08
+30,Kapan Pangeran Diponegoro lahir?,WHEN,11 November 1785,DATE,tokoh_09
+31,Di kota mana Pangeran Diponegoro wafat?,WHERE,Makassar,LOCATION,tokoh_09
+32,Siapa ayah Pangeran Diponegoro?,WHO,Sultan Hamengkubuwono III,PERSON,tokoh_09
+33,Di kota mana Ahmad Yani lahir?,WHERE,Purworejo,LOCATION,tokoh_10
+34,Kapan Ahmad Yani gugur?,WHEN,1 Oktober 1965,DATE,tokoh_10
+35,Kapan Sultan Hasanuddin menandatangani Perjanjian Bungaya?,WHEN,18 November 1667,DATE,tokoh_11
+36,Apa julukan Sultan Hasanuddin?,WHAT,Ayam Jantan dari Timur,DESCRIPTION,tokoh_11
