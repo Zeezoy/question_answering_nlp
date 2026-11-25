@@ -1,32 +1,41 @@
-"""Evaluasi akurasi pada daftar pertanyaan.
-
-Pemilik: Anggota 3 (branch feature/corpus-eval).
-Tes: tests/test_evaluation.py
-
-Format questions.csv (encoding UTF-8), kolom persis:
-    no,pertanyaan,tipe_pertanyaan,ground_truth,tipe_jawaban,id_tokoh
-"""
-
+import csv
 
 def normalisasi(teks: str) -> str:
-    """Huruf kecil, buang spasi di tepi, rapatkan spasi ganda menjadi satu."""
-    raise NotImplementedError("TODO: implementasi normalisasi")
-
+    return " ".join(teks.lower().split())
 
 def is_correct(jawaban, ground_truth: str) -> bool:
-    """Benar jika ground_truth (ternormalisasi) ada di dalam jawaban
-    (ternormalisasi) atau sebaliknya. jawaban None -> False."""
-    raise NotImplementedError("TODO: implementasi is_correct")
+   if jawaban is None:
+       return False
 
+   j = normalisasi(jawaban)
+   g = normalisasi(ground_truth)
+
+   return g in j or j in g
 
 def evaluate(qa_fn, questions_csv: str) -> dict:
-    """Jalankan qa_fn pada tiap pertanyaan di questions_csv.
+    detail = []
 
-    qa_fn: fungsi yang menerima string pertanyaan dan mengembalikan dict yang
-        punya kunci "jawaban" (contoh: QAPipeline(...).answer).
-    Mengembalikan dict:
-        {"total": int, "benar": int, "salah": int, "akurasi": float (persen),
-         "detail": [{"no", "pertanyaan", "ground_truth", "jawaban", "benar"}, ...]}
-    akurasi = benar / total * 100.
-    """
-    raise NotImplementedError("TODO: implementasi evaluate")
+    with open(questions_csv, encoding="utf-8", newline="") as f:
+        for baris in csv.DictReader(f):
+            jawaban = qa_fn(baris["pertanyaan"])["jawaban"]
+
+            detail.append({
+                "no": baris["no"],
+                "pertanyaan": baris["pertanyaan"],
+                "ground_truth": baris["ground_truth"],
+                "jawaban": jawaban,
+                "benar": is_correct(jawaban, baris["ground_truth"]),
+            })
+
+    total = len(detail)
+    benar = sum(1 for d in detail if d["benar"])
+    salah = total - benar
+    akurasi = benar / total * 100 if total else 0.0
+
+    return {
+        "total": total,
+        "benar": benar,
+        "salah": salah,
+        "akurasi": akurasi,
+        "detail": detail,
+    }
