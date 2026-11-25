@@ -15,9 +15,18 @@ def load_corpus(corpus_dir: str) -> list:
     
 
 def split_passages(teks: str) -> list:
-   passages = re.split(r"(?<=[.!?])\s+", teks.strip())
-
-   return [p.strip() for p in passages if p.strip()]
+   potongan = re.split(r"(?<=[.!?])\s+", teks.strip())
+   hasil = []
+   for p in potongan:
+       p = p.strip()
+       if not p:
+           continue
+       # gabung kalau potongan sebelumnya berakhir singkatan (R.M., Dr., Ir.)
+       if hasil and re.search(r"(?:\b[A-Z](?:\.[A-Z])+\.|\bDr\.|\bIr\.|\bProf\.)$", hasil[-1]):
+           hasil[-1] = hasil[-1] + " " + p
+       else:
+           hasil.append(p)
+   return hasil
 
 
 class Retriever:
@@ -35,7 +44,7 @@ class Retriever:
                 })
 
         self.tokens = [
-            preprocess(item["passage"])
+            preprocess(item["nama"] + " " + item["passage"])
             for item in self.passages
         ]
 

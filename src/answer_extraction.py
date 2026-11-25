@@ -47,7 +47,7 @@ def _ekstrak_location(passage: str):
     
     return None
 
-def _ekstrak_person(passage: str, pertanyaan: str):
+def _ekstrak_person(passage: str, pertanyaan: str, nama: str = ""):
     kata_ganti = {"Ia", "Dia", "Beliau"}
     pertanyaan_kecil = pertanyaan.lower()
 
@@ -61,10 +61,15 @@ def _ekstrak_person(passage: str, pertanyaan: str):
             continue
         if k in BULAN:
             continue
+        if k.lower() in {"dalam","pada","setelah","selain","karena","atau"}:
+            continue
         if any(kata.lower() in pertanyaan_kecil for kata in k.split()):
             continue
 
         return k
+
+    if nama and re.search(r"\b(?:Ia|ia|Dia|dia|Beliau|beliau)\b", passage):
+        return nama
 
     return None
 
@@ -79,7 +84,8 @@ def _ekstrak_description(passage: str):
 def extract_answer(
     passage: str,
     answer_type: str,
-    pertanyaan: str = ""
+    pertanyaan: str = "",
+    nama: str = ""
 ):
     if answer_type == "DATE":
         return _ekstrak_date(passage)
@@ -91,7 +97,7 @@ def extract_answer(
         return _ekstrak_location(passage)
 
     elif answer_type == "PERSON":
-        return _ekstrak_person(passage, pertanyaan)
+        return _ekstrak_person(passage, pertanyaan, nama)
 
     elif answer_type == "DESCRIPTION":
         return _ekstrak_description(passage)

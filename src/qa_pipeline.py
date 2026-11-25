@@ -18,7 +18,8 @@ class QAPipeline:
             jawaban = extract_answer(
                 item["passage"],
                 tipe_jawaban,
-                pertanyaan
+                pertanyaan,
+                item["nama"]
             )
 
             if jawaban is not None:
