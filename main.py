@@ -1,18 +1,54 @@
-"""Titik masuk program (CLI).
+import sys
+from src.qa_pipeline import QAPipeline
+from src.evaluation import evaluate
 
-Pemilik: Anggota 3 (branch feature/corpus-eval).
+def mode_evaluasi(qa):
+    hasil = evaluate(qa.answer, "data/questions/questions.csv")
 
-Yang diharapkan:
-  python main.py                 -> mode tanya jawab interaktif; ketik 'keluar' untuk berhenti
-  python main.py --evaluasi      -> jalankan seluruh pertanyaan di data/questions/questions.csv,
-                                    cetak tiap pertanyaan, jawaban sistem, ground truth, benar/salah,
-                                    lalu total benar, salah, dan akurasi.
-Memakai QAPipeline("data/corpus") dan src.evaluation.evaluate.
-"""
+    for d in hasil["detail"]:
+        status = "BENAR" if d["benar"] else "SALAH"
 
+        print(f'{d["no"]}. {d["pertanyaan"]}')
+        print(f'   Sistem      : {d["jawaban"]}')
+        print(f'   Ground truth: {d["ground_truth"]}  -> {status}')
+
+    print()
+    print(
+        "Total:", hasil["total"],
+        "| Benar:", hasil["benar"],
+        "| Salah:", hasil["salah"]
+    )
+    print(f'Akurasi: {hasil["akurasi"]:.1f}%')
+
+def mode_interaktif(qa):
+    print("Ketik pertanyaan (ketik 'keluar' untuk berhenti)")
+
+    while True:
+        pertanyaan = input("> ").strip()
+
+        if pertanyaan.lower() == "keluar":
+            break
+
+        if not pertanyaan:
+            continue
+
+        hasil = qa.answer(pertanyaan)
+
+        jawaban = (
+            hasil["jawaban"]
+            if hasil["jawaban"] is not None
+            else "Jawaban tidak ditemukan"
+        )
+
+        print(jawaban)
 
 def main():
-    raise NotImplementedError("TODO: implementasi main")
+    qa = QAPipeline("data/corpus")
+
+    if "--evaluasi" in sys.argv:
+        mode_evaluasi(qa)
+    else:
+        mode_interaktif(qa)
 
 
 if __name__ == "__main__":
