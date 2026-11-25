@@ -1,22 +1,22 @@
-"""Klasifikasi pertanyaan berbasis aturan (rule-based).
-
-Pemilik: Anggota 2 (branch feature/classification).
-Tes: tests/test_question_classifier.py
-
-Fungsi ini menerima pertanyaan ASLI (bukan hasil preprocess), karena kata tanya
-seperti "kapan" dan "siapa" dibutuhkan di sini.
-"""
-
 TIPE_PERTANYAAN = ("WHO", "WHEN", "WHERE", "HOW_MANY", "WHAT")
 
 
-def classify_question(pertanyaan: str) -> str:
-    """Kembalikan salah satu dari TIPE_PERTANYAAN.
+def classify_question(question: str) -> str:
+    q = question.lower()
 
-    Aturan minimal:
-      siapa -> WHO | kapan -> WHEN | dimana / di mana / di kota mana -> WHERE
-      berapa -> HOW_MANY | selain itu -> WHAT (default)
-    Tidak peka huruf besar/kecil.
-    Tantangan (tidak wajib): "Tahun berapa ..." sebenarnya WHEN, bukan HOW_MANY.
-    """
-    raise NotImplementedError("TODO: implementasi classify_question")
+    if "tahun berapa" in q:
+        return "WHEN"
+
+    if "kapan" in q:
+        return "WHEN"
+
+    if "siapa" in q:
+        return "WHO"
+
+    if "dimana" in q or "di mana" in q or "di kota mana" in q:
+        return "WHERE"
+
+    if "berapa" in q:
+        return "HOW_MANY"
+
+    return "WHAT"
