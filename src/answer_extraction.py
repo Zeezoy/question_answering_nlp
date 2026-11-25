@@ -1,26 +1,99 @@
-"""Ekstraksi jawaban dari passage.
+import re
 
-Pemilik: Anggota 2 (branch feature/classification).
-Tes: tests/test_answer_extraction.py
+BULAN = [
+        "Januari", "Februari", "Maret", "April",
+        "Mei", "Juni", "Juli", "Agustus",
+        "September", "Oktober", "November", "Desember"
+    ]
 
-Teknik yang boleh dipakai: regex, aturan berbasis pola kata, POS tagging atau NER
-(kalau memakai library, catat di Bab IV). Tim wajib memakai minimal satu teknik
-dari materi kuliah PBA di bagian ini atau di retrieval, dan harus bisa menjelaskannya.
-"""
+POLA_BULAN = "|".join(BULAN)
+POLA_TANGGAL = rf"\b\d{{1,2}}\s+(?:{POLA_BULAN})\s+\d{{4}}\b"
 
+POLA_TAHUN = r"\b\d{4}\b"
 
-def extract_answer(passage: str, answer_type: str, pertanyaan: str = ""):
-    """Ambil potongan jawaban dari passage sesuai answer_type.
+def _ekstrak_date(passage:str):
+    
+    hasil = re.search(POLA_TANGGAL, passage, re.IGNORECASE)
 
-    answer_type: salah satu dari PERSON, DATE, LOCATION, NUMBER, DESCRIPTION.
-    pertanyaan: pertanyaan asli, boleh dipakai untuk menyingkirkan kandidat
-        yang sudah disebut di pertanyaan (misalnya nama tokoh yang ditanyakan).
+    if hasil:
+        return hasil.group(0)
 
-    Mengembalikan string jawaban, atau None jika tidak ditemukan.
-    Contoh yang diharapkan tes:
-      DATE      "Soekarno lahir di Surabaya pada 6 Juni 1901."   -> "6 Juni 1901"
-      LOCATION  "Jenderal Sudirman lahir di Purbalingga pada ..." -> "Purbalingga"
-      NUMBER    "Tokoh ini memiliki 3 anak."                      -> "3"
-      DESCRIPTION: boleh mengembalikan kalimat/frasa yang memuat jawaban.
-    """
-    raise NotImplementedError("TODO: implementasi extract_answer")
+    hasil = re.search(POLA_TAHUN, passage)
+
+    if hasil:
+        return hasil.group(0)
+
+    return None
+
+def _ekstrak_number(passage: str):
+    sisa = re.sub(POLA_TANGGAL, " ", passage, flags=re.IGNORECASE)
+    sisa = re.sub(POLA_TAHUN, " ", sisa)
+
+    hasil = re.search(r"\b\d+\b", sisa)
+
+    if hasil:
+        return hasil.group(0)
+    
+    return None
+
+def _ekstrak_location(passage: str):
+    
+    pola_lokasi = r"\b[Dd]i\s+([A-Z]\w*(?:\s+[A-Z]\w*)*)"
+
+    hasil = re.search(pola_lokasi, passage)
+
+    if hasil:
+        return hasil.group(1)
+    
+    return None
+
+def _ekstrak_person(passage: str, pertanyaan: str):
+    kata_ganti = {"Ia", "Dia", "Beliau"}
+    pertanyaan_kecil = pertanyaan.lower()
+
+    kandidat = re.findall(
+        r"[A-Z]\w*(?:\s+[A-Z]\w*)*",
+        passage
+    )
+
+    for k in kandidat:
+        if k in kata_ganti:
+            continue
+        if k in BULAN:
+            continue
+        if any(kata.lower() in pertanyaan_kecil for kata in k.split()):
+            continue
+
+        return k
+
+    return None
+
+def _ekstrak_description(passage: str):
+    hasil = passage.strip()
+
+    if hasil:
+        return hasil
+
+    return None
+
+def extract_answer(
+    passage: str,
+    answer_type: str,
+    pertanyaan: str = ""
+):
+    if answer_type == "DATE":
+        return _ekstrak_date(passage)
+
+    elif answer_type == "NUMBER":
+        return _ekstrak_number(passage)
+
+    elif answer_type == "LOCATION":
+        return _ekstrak_location(passage)
+
+    elif answer_type == "PERSON":
+        return _ekstrak_person(passage, pertanyaan)
+
+    elif answer_type == "DESCRIPTION":
+        return _ekstrak_description(passage)
+
+    return None
