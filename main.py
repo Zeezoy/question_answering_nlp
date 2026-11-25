@@ -40,7 +40,15 @@ def mode_interaktif(qa):
             else "Jawaban tidak ditemukan"
         )
 
-        print(jawaban)
+        print(f"Jawaban   : {jawaban}")
+
+        if hasil["jawaban"] is not None:
+            print(f'Tipe      : {hasil["tipe_pertanyaan"]} -> {hasil["tipe_jawaban"]}')
+            print(f'ID tokoh  : {hasil["id_tokoh"]}')
+            print(f'Skor      : {hasil["score"]:.4f}')
+            print(f'Passage   : {hasil["passage"]}')
+
+        print()
 
 def main():
     qa = QAPipeline("data/corpus")
