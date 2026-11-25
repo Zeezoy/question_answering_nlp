@@ -31,6 +31,7 @@ class QAPipeline:
                     "id_tokoh": item["id_tokoh"],
                     "score": item["score"],
                 }
+            
         return {
             "pertanyaan": pertanyaan,
             "tipe_pertanyaan": tipe_pertanyaan,
