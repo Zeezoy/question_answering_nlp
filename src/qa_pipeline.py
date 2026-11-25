@@ -1,26 +1,43 @@
-"""Perakitan seluruh tahap menjadi satu sistem QA.
-
-Pemilik: Anggota 1 (branch feature/retrieval). Dikerjakan TERAKHIR, setelah
-modul Anggota 2 sudah ter-merge.
-Tes: tests/test_pipeline.py
-
-Alur: klasifikasi pertanyaan -> tipe jawaban -> retrieval passage ->
-      ekstraksi jawaban dari passage (coba berurutan sampai ada yang berhasil).
-"""
-
+from src.retrieval import load_corpus, Retriever
+from src.question_classifier import classify_question
+from src.answer_type import get_answer_type
+from src.answer_extraction import extract_answer
 
 class QAPipeline:
     def __init__(self, corpus_dir: str):
-        """Muat korpus dan siapkan Retriever."""
-        raise NotImplementedError("TODO: implementasi QAPipeline.__init__")
+        dokumen = load_corpus(corpus_dir)
+        self.retriever = Retriever(dokumen)
 
     def answer(self, pertanyaan: str, top_k: int = 3) -> dict:
-        """Jawab satu pertanyaan.
+        tipe_pertanyaan = classify_question(pertanyaan)
+        tipe_jawaban = get_answer_type(tipe_pertanyaan)
 
-        Mengembalikan dict dengan kunci:
-          pertanyaan, tipe_pertanyaan, tipe_jawaban, jawaban, passage,
-          id_tokoh, score
-        Jika tidak ada jawaban: jawaban = None (kunci lain tetap ada, boleh None).
-        Tidak boleh melempar error untuk pertanyaan yang tidak dikenal.
-        """
-        raise NotImplementedError("TODO: implementasi QAPipeline.answer")
+        kandidat = self.retriever.retrieve(pertanyaan, top_k)
+
+        for item in kandidat:
+            jawaban = extract_answer(
+                item["passage"],
+                tipe_jawaban,
+                pertanyaan
+            )
+
+            if jawaban is not None:
+                return{
+                    "pertanyaan": pertanyaan,
+                    "tipe_pertanyaan": tipe_pertanyaan,
+                    "tipe_jawaban": tipe_jawaban,
+                    "jawaban": jawaban,
+                    "passage": item["passage"],
+                    "id_tokoh": item["id_tokoh"],
+                    "score": item["score"],
+                }
+        return {
+            "pertanyaan": pertanyaan,
+            "tipe_pertanyaan": tipe_pertanyaan,
+            "tipe_jawaban": tipe_jawaban,
+            "jawaban": None,
+            "passage": None,
+            "id_tokoh": None,
+            "score": None,
+        }
+
