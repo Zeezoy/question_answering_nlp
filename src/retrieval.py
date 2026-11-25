@@ -1,43 +1,106 @@
-"""Passage retrieval dengan TF-IDF dan cosine similarity.
-
-Pemilik: Anggota 1 (branch feature/retrieval).
-Tes: tests/test_retrieval.py
-
-Skema dokumen korpus (satu file JSON per tokoh di data/corpus/):
-    id, nama, kategori, teks_biografi, sumber, tanggal_akses
-"""
-from src.preprocessing import preprocess  # noqa: F401  (dipakai saat implementasi)
-
+from src.preprocessing import preprocess  
+import json
+import math
+import re
+from pathlib import Path
 
 def load_corpus(corpus_dir: str) -> list:
-    """Baca semua file *.json di corpus_dir (urut nama file).
-
-    Mengembalikan list dokumen, tiap dokumen berupa dict sesuai skema di atas.
-    """
-    raise NotImplementedError("TODO: implementasi load_corpus")
-
+    documents = []
+    files = sorted(Path(corpus_dir).glob("*.json"))
+    for file in files:
+        with open(file, "r", encoding="utf-8") as f:
+            document = json.load(f)
+            documents.append(document)
+    return documents
+    
 
 def split_passages(teks: str) -> list:
-    """Pecah teks biografi menjadi passage per kalimat.
+   passages = re.split(r"(?<=[.!?])\s+", teks.strip())
 
-    Spasi di tepi dibuang dan passage kosong tidak dikembalikan.
-    Teks kosong -> [].
-    """
-    raise NotImplementedError("TODO: implementasi split_passages")
+   return [p.strip() for p in passages if p.strip()]
 
 
 class Retriever:
-    """Index passage dari seluruh dokumen lalu cari passage paling relevan."""
-
     def __init__(self, documents: list):
-        """Bangun index (TF-IDF) dari passage seluruh dokumen."""
-        raise NotImplementedError("TODO: implementasi Retriever.__init__")
+        self.passages = []
+
+        for document in documents:
+            sentences_list = split_passages(document.get("teks_biografi", ""))
+
+            for sentences in sentences_list:
+                self.passages.append({
+                    "id_tokoh": document["id"],
+                    "nama": document["nama"],
+                    "passage": sentences
+                })
+
+        self.tokens = [
+            preprocess(item["passage"])
+            for item in self.passages
+        ]
+
+        self.vocabulary = set()
+
+        for tokens in self.tokens:
+            self.vocabulary.update(tokens)
+
+        N = len(self.tokens)
+        self.idf = {}
+
+        for word in self.vocabulary:
+            df = sum(1 for tokens in self.tokens if word in tokens)
+            self.idf[word] = math.log(N / df) + 1
+
+        self.vectors = []
+
+        for tokens in self.tokens:
+            tfidf = {}
+
+            for word in tokens:
+                tf = tokens.count(word)
+                tfidf[word] = tf * self.idf[word]
+
+            self.vectors.append(tfidf)
 
     def retrieve(self, pertanyaan: str, top_k: int = 3) -> list:
-        """Kembalikan maksimal top_k hasil, urut skor menurun.
+        query_tokens = preprocess(pertanyaan)
 
-        Tiap hasil berupa dict: {"id_tokoh", "nama", "passage", "score"}.
-        Jika tidak ada kata yang cocok sama sekali, boleh mengembalikan [] atau
-        hasil dengan score 0.
-        """
-        raise NotImplementedError("TODO: implementasi Retriever.retrieve")
+        query_vector = {}
+
+        for word in query_tokens:
+            if word in self.vocabulary:
+                tf = query_tokens.count(word)
+                query_vector[word] = tf * self.idf[word]
+
+        result = []
+
+        for i, passage_vector in enumerate(self.vectors):
+            dot_product = sum(
+                query_vector.get(word, 0) * passage_vector.get(word, 0)
+                for word in self.vocabulary
+            )
+
+            query_length = math.sqrt(
+                sum(value ** 2 for value in query_vector.values())
+            )
+
+            passage_length = math.sqrt(
+                sum(value ** 2 for value in passage_vector.values())
+            )
+
+            if query_length == 0 or passage_length == 0:
+                score = 0
+            else:
+                score = dot_product / (
+                    query_length * passage_length
+                )
+                
+            result.append({
+                **self.passages[i],
+                "score": score
+            })
+
+        result.sort(key=lambda x: x["score"], reverse=True)
+
+        return result[:top_k]
+            
